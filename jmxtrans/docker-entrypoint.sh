@@ -17,11 +17,39 @@ cat <<EOF > $JMXTRANS_CONFIG
         {
           "obj": "java.lang:type=Memory",
           "attr": [ "HeapMemoryUsage", "NonHeapMemoryUsage" ],
-          "resultAlias": "jvmMemory",
+          "resultAlias": "Memory",
           "outputWriters": [
             {
-              "@class": "com.googlecode.jmxtrans.model.output.StdOutWriter"
-            },
+              "@class" : "com.googlecode.jmxtrans.model.output.InfluxDbWriterFactory",
+              "url" : "${INFLUX_DBURL}",
+              "username" : "${INFLUX_DBUNAME}",
+              "password" : "${INFLUX_DBPWD}",
+              "database" : "${INFLUX_DBNAME}",
+              "tags"     : {"application" : "jmx"}
+            }
+          ]
+        },
+        {
+          "obj": "java.lang:type=Threading",
+          "attr": ["ThreadCount", "DaemonThreadCount", "PeakThreadCount","TotalStartedThreadCount"],
+          "resultAlias": "Threading",
+          "outputWriters": [
+            {
+              "@class" : "com.googlecode.jmxtrans.model.output.InfluxDbWriterFactory",
+              "url" : "${INFLUX_DBURL}",
+              "username" : "${INFLUX_DBUNAME}",
+              "password" : "${INFLUX_DBPWD}",
+              "database" : "${INFLUX_DBNAME}",
+              "tags"     : {"application" : "jmx"}
+            }
+          ]
+        },
+        {
+          "obj": "Catalina:type=ThreadPool,name=\"http-apr-8080\"",
+          "attr": ["maxConnections", "maxThreads","minSpareThreads", 
+                    "maxKeepAliveRequests","currentThreadCount","currentThreadsBusy"],
+          "resultAlias": "CatalinaThreadPool",
+          "outputWriters": [
             {
               "@class" : "com.googlecode.jmxtrans.model.output.InfluxDbWriterFactory",
               "url" : "${INFLUX_DBURL}",

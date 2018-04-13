@@ -1,11 +1,14 @@
 jvm-app:
   image: tomcat:7.0.72-jre8
+  ports:
+    - '6001:6001'
   environment:
     JAVA_OPTS: '-Dcom.sun.management.jmxremote=true 
     -Dcom.sun.management.jmxremote.port=6001 
     -Dcom.sun.management.jmxremote.rmi.port=6001 
     -Dcom.sun.management.jmxremote.authenticate=false 
-    -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=jvm-app'
+    -Dcom.sun.management.jmxremote.ssl=false
+    -Djava.rmi.server.hostname=jvm-app'
 
 jmxtrans:
   build: ./jmxtrans
@@ -33,9 +36,9 @@ influxdb:
     - INFLUXDB_ADMIN_USER=root
     - INFLUXDB_ADMIN_PASSWORD=root
     - INFLUXDB_ADMIN_ENABLED=true
-    - INFLUXDB_DB=test
-    - INFLUXDB_USER=test
-    - INFLUXDB_USER_PASSWORD=test
+    # - INFLUXDB_DB=test
+    # - INFLUXDB_USER=test
+    # - INFLUXDB_USER_PASSWORD=test
   ports:
     - '8086:8086'
     - '8083:8083'
